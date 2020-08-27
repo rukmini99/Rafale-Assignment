@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Rafale Route</h1>
+
+    <div id="googleMap" style="width: 100%; height: 400px"></div>
+
+    <button type="button" onclick="btn_Rafale()">Launch Rafale</button>
+    <p>Please wait for 20 secs</p>
+
+    <script>
+      var flag = false;
+      var count = 0;
+      function myMap() {
+        var mapProp = {
+          center: { lat: 33.420425, lng: 44.29763 },
+          mapTypeId: "terrain",
+          zoom: 3,
+        };
+        var map = new google.maps.Map(
+          document.getElementById("googleMap"),
+          mapProp
+        );
+        const marker_paris = new google.maps.Marker({
+          position: { lat: 48.85341, lng: 2.3488 },
+          label: { color: '#00aaff', fontWeight: 'bold', fontSize: '14px', text: 'Paris' },
+          map: map,
+        });
+        const marker_ambala = new google.maps.Marker({
+          position: { lat: 30.37818, lng: 76.776695 },
+          label: { color: '#00aaff', fontWeight: 'bold', fontSize: '14px', text: 'Ambala' },
+          map: map,
+        });
+
+        var planeSymbol = {
+          path:
+            "M 8.1326447,0.80527736 C 8.5471666,0.063577346 9.742752,0.030177346 10.052431,0.82497736 C 10.093464,3.0114774 10.134497,5.1980774 10.17553,7.3845774 C 12.760407,8.9653774 15.345284,10.546179 17.930161,12.127079 C 17.930161,12.881779 17.930161,13.636479 17.930161,14.391179 C 15.373077,13.579479 12.815993,12.767779 10.258908,11.956179 C 10.27281,13.280479 10.286713,14.604879 10.300615,15.929279 C 10.8565,16.555879 11.412385,17.182479 11.96827,17.809079 C 12.25527,18.269479 12.437605,19.641079 11.59784,19.085079 C 10.804104,18.802179 10.010367,18.519179 9.21663,18.236279 C 8.3133108,18.620779 7.4099916,19.005279 6.5066724,19.389779 C 6.3952441,18.705879 6.2272708,17.857479 6.8519879,17.359679 C 7.2927717,16.882879 7.7335555,16.406079 8.1743393,15.929279 C 8.1465467,14.604879 8.1187541,13.280479 8.0909615,11.956179 C 5.5894706,12.824879 3.0879797,13.693479 0.58648883,14.562179 C 0.54479393,13.821679 0.50309893,13.081079 0.46140403,12.340579 C 3.0184842,10.717079 5.5755645,9.0935778 8.1326447,7.4700774 C 8.1326447,5.2484774 8.1326447,3.0268774 8.1326447,0.80527736 z",
+          scale: 1,
+          strokeOpacity: 1,
+          strokecolor: "black",
+          strokeWeight: 2,
+          anchor: new google.maps.Point(9, 9),
+        };
+        var GRU = new google.maps.Polyline({
+          path: [
+            { lat: 48.85341, lng: 2.3488 },
+            { lat: 30.37818, lng: 76.776695 },
+          ], //Lis - GRU
+          strokeOpacity: 0.5,
+          icons: [
+            {
+              icon: planeSymbol,
+              offset: "0",
+            },
+          ],
+          map: map,
+        });
+        var k = 0;
+        function launch_animation(line, steps, stepTime) {
+          var count = 0;// it counts from 0 to (parameter) steps, then cycles.
+          if (k < 5) {
+            k = k + 1; 
+            var listener = window.setInterval(function () {
+              count = (count + 1) % steps;
+              var icons = line.get("icons");
+              icons[0].offset = (100 * count) / steps + "%";
+              line.set("icons", icons);
+            }, stepTime);
+
+            //console.log(k);
+          }
+          // you don't need this return, but you could use it for extra control, like if you have buttons to pause/stop/start the animation.
+          return listener;
+        }
+        setInterval(function () {
+          if (flag) {
+            //console.log(count);
+            if (count < 5) {
+              launch_animation(GRU, 100, 200);
+              count += 1;
+            } else {
+              flag = false;
+              alert("Rafale successfully delivered to India");
+            }
+          }
+        }, 21000);
+        //;
+      }
+
+      function btn_Rafale() {
+        flag = true;
+      }
+    </script>
+
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3hWe7L7i7GBJiyqsvcgRLxAvVAVWOoIY&callback=myMap"
+    ></script>
+  </body>
+</html>
